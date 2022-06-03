@@ -5,6 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private float _rayCastDitsnce;
+    private float rbDrag;
     private float horizon;
     private float vertical;
     //-------------------------------------
@@ -12,11 +15,16 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     private Animator anim;
     //-------------------------------------
-
+    RaycastHit2D hit;
+    [SerializeField] LayerMask layermask;
+    [SerializeField] Transform JumprayCastOrgin;
+    //-------------------------------------
+    [SerializeField] bool canJump;
     void Start()
     {
-
+        
         rb = GetComponent<Rigidbody2D>();
+        rbDrag = rb.drag;
         anim = GetComponentInChildren<Animator>();
         EarroLogCheck();
     }
@@ -26,12 +34,15 @@ public class Player : MonoBehaviour
     {
         MovmentVariable();
         FlipPlayer();
+        JumpingDetect();
     }
 
     private void FixedUpdate()
     {
         PlayerMovement();
-        
+        Jump();
+        hit = Physics2D.Raycast(JumprayCastOrgin.transform.position, Vector2.down, _rayCastDitsnce, layermask);
+        Debug.DrawRay(JumprayCastOrgin.transform.position,Vector2.down,Color.red);
     }
     void MovmentVariable()
     {
@@ -45,7 +56,7 @@ public class Player : MonoBehaviour
         if(horizon>0.1f||horizon<-0.1f)
         {
             anim.SetBool("IsRunning", true);
-            rb.AddForce(movement, ForceMode2D.Impulse);
+            rb.AddForce(movement,ForceMode2D.Impulse);
         }
 
         else
@@ -54,8 +65,33 @@ public class Player : MonoBehaviour
         }
 
     }
+    void JumpingDetect()
+    {
+        if(hit.collider)
+        {
+           // rb.drag = 5;
+        }
+        if(hit.collider!=null&& Input.GetKeyDown(KeyCode.Space))
+        {
+            canJump = true;
+            
+        }
+        else if(hit.collider==null)
+        {
+            canJump = false;
+            //rb.drag = 0.1f;
+        }
 
-
+        
+    }
+    void Jump()
+    {
+        if(canJump)
+        {
+            rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        }
+        
+    }
     void FlipPlayer()
     {
         if(horizon>0.1f)

@@ -11,7 +11,7 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
+  - WayPoint
   - 
   - 
   - 
@@ -49,6 +49,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 1764928549
+    locked: 0
+  - name: enemy
+    uniqueID: 2126731461
     locked: 0
   - name: Player
     uniqueID: 2148905035
