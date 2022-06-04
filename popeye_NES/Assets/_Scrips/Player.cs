@@ -1,27 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private float _rayCastDitsnce;
+    [SerializeField] private int liveCount;
+    private int heartCount;
     private float horizon;
     private float vertical;
     //-------------------------------------
     Vector2 movement;
     Rigidbody2D rb;
     private Animator anim;
+    Lives lives;
+    Hearts hearts;
     //-------------------------------------
     RaycastHit2D hit;
     [SerializeField] LayerMask layermask;
     [SerializeField] Transform JumprayCastOrgin;
     //-------------------------------------
     [SerializeField] bool canJump;
+    public bool gameOver;
+
+    //-----------------------
+    AudioSource source;
+    [SerializeField] AudioClip hitEffect;
+    
     void Start()
     {
+       
+        lives = GameObject.Find("Canvas").GetComponent<Lives>();
+        source = GetComponent<AudioSource>();
         
+       
+
+        if(lives==null)
+        {
+            Debug.LogError(" Cant find Canvas");
+        }
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
         EarroLogCheck();
@@ -30,9 +50,14 @@ public class Player : MonoBehaviour
   
     void Update()
     {
-        MovmentVariable();
-        FlipPlayer();
-        JumpingDetect();
+        if(gameOver!=true)
+        {
+            MovmentVariable();
+            FlipPlayer();
+            JumpingDetect();
+            Dead();
+        }
+       
     }
 
     private void FixedUpdate()
@@ -65,10 +90,7 @@ public class Player : MonoBehaviour
     }
     void JumpingDetect()
     {
-        if(hit.collider)
-        {
        
-        }
         if(hit.collider!=null&& Input.GetKeyDown(KeyCode.Space))
         {
             canJump = true;
@@ -111,4 +133,60 @@ public class Player : MonoBehaviour
             Debug.LogError("Cant Find Animator");
         }
     }
+    //------------------------Lives check------------------
+    public void PlayerLives()
+    {
+        liveCount--;
+        lives.UpdateLives(liveCount);
+        if(source.isPlaying==false)
+        {
+            
+            source.PlayOneShot(hitEffect);
+        }
+    }
+    public void HeartCount()
+    {
+        heartCount++;
+
+        lives.UpdateHeartCollected(heartCount);
+    }
+
+    void Dead()
+    {
+        if(liveCount<=0)
+        {
+            gameOver=true;
+            rb.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            liveCount = 0;
+            anim.SetBool("IsDead", true);
+            StartCoroutine(LoadLevel());
+        }
+    }
+
+    
+    
+   
+    
+    public void GameOver()
+    {
+        gameOver = true;
+        anim.SetBool("IsDead", true);
+        rb.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        StartCoroutine(LoadLevel());
+        if (gameOver==false)
+        {
+            MovmentVariable();
+            FlipPlayer();
+            JumpingDetect();
+            Dead();
+        }
+        
+    }
+
+    public IEnumerator LoadLevel()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(0);
+    }
+
 }

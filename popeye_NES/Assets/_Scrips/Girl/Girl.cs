@@ -5,7 +5,7 @@ using UnityEngine;
 public class Girl : MonoBehaviour
 {
     Rigidbody2D rb;
-
+    
     //-----------------------
     [SerializeField] private float throwDealy;
     [SerializeField] private float canThrow;
@@ -15,10 +15,16 @@ public class Girl : MonoBehaviour
 
     //-----------------------
     [SerializeField] bool throwHeart;
-
-
+    Player player;
+    //-----------------------
+    Animator anim;
+   public  Flip flip;
+    
     void Start()
     {
+        flip = GetComponent<Flip>();
+        anim = GetComponent<Animator>();
+        player = GameObject.Find("Player").GetComponent<Player>();
         canThrow = 2;
         rb = GetComponent<Rigidbody2D>();
         
@@ -27,7 +33,17 @@ public class Girl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ThrowHeart();
+        if(player.gameOver==false)
+        {
+            ThrowHeart();
+        }
+        else if (player.gameOver == true)
+        {
+            anim.SetTrigger("tripOver");
+            flip.enabled = false;
+    
+        }
+        
     }
 
 

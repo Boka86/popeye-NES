@@ -8,9 +8,11 @@ public class EnemyWeapon : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float destroyTimer;
     [SerializeField] Transform target;
+    Player player;
 
     void Start()
     {
+        player = GameObject.Find("Player").GetComponent<Player>();
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         Destroy(gameObject, destroyTimer);
     }
@@ -30,7 +32,15 @@ public class EnemyWeapon : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("i Hit : " + collision.gameObject.name);
+            DamagamePlayer();
             Destroy(gameObject);
         }
+ 
+   }
+
+
+    void DamagamePlayer()
+    {
+        player.PlayerLives();
     }
 }

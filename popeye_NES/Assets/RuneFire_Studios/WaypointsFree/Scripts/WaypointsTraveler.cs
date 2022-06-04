@@ -11,6 +11,13 @@ namespace WaypointsFree
     /// </summary>
     public class WaypointsTraveler : MonoBehaviour
     {
+        Player Player;
+       
+        
+            
+        
+
+       
         [Tooltip("WaypointsGroup gameobject containing the waypoints to travel.")]
         public WaypointsGroup Waypoints = null;
 
@@ -102,6 +109,7 @@ namespace WaypointsFree
         // Start is called before the first frame update
         void Start()
         {
+            Player = GameObject.Find("Player").GetComponent<Player>();
             moveSpeedOriginal = MoveSpeed;
             lookAtSpeedOriginal = LookAtSpeed;
 
@@ -141,6 +149,10 @@ namespace WaypointsFree
                 {
                     SetNextPosition();
                 }
+            }
+            if(Player.gameOver==true)
+            {
+                isMoving = false;
             }
         }
 

@@ -17,20 +17,25 @@ public class Enemy : MonoBehaviour
     [SerializeField] Transform leftRayCastOrgin;
     [SerializeField] Transform fireFlakes;
     [SerializeField] Transform gun;  // point to insitate any item to hit the target (Player)
-    [SerializeField] LayerMask layermask;
-
+    [SerializeField] GameObject attackParticle;
     //------------------------------------
     Rigidbody2D rb;
     Animator anim;
     RaycastHit2D hitRight;
     RaycastHit2D hitLeft;
+    [SerializeField] LayerMask layermask;
+    Player player;
     //-----------------------------------
     [SerializeField] bool Patrol;
     [SerializeField] bool attackPlayer;
     //-----------------------------------
-   [SerializeField] GameObject attackParticle;
+    AudioSource source;
+    [SerializeField] AudioClip attaackSound;
+
     void Start()
     {
+        source = GetComponent<AudioSource>();
+        player = GameObject.Find("Player").GetComponent<Player>();
         anim = GetComponentInChildren<Animator>();
         randomTarget = Random.Range(0, target.Length);
         xCurrentPostion = transform.position.x;
@@ -39,11 +44,22 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        FlipSprite();
-        AttackPlayer();
-        xCurrentPostion = transform.position.x;
         CheckDistanceToPatrolPoints();
+        if (player.gameOver==false)
+        {
+            AttackPlayer();
+            
+
+        }
+        else if(player.gameOver == true)
+        {
+            anim.SetTrigger("Idle");
+            attackParticle.SetActive(false);
+        }
         FoundPlayer();
+        FlipSprite();
+        xCurrentPostion = transform.position.x;
+       
         Debug.DrawRay(rightRayCastOrgin.transform.position, Vector2.right, Color.red);
         Debug.DrawRay(leftRayCastOrgin.transform.position, -Vector2.right, Color.red);
     }
@@ -121,6 +137,12 @@ public class Enemy : MonoBehaviour
     {
         if (attackPlayer)
         {
+
+            if(source.isPlaying==false)
+            {
+                source.PlayOneShot(attaackSound);
+            }
+          
             anim.SetTrigger("attack");
 
         }
