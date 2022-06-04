@@ -6,25 +6,32 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _stopDistance;
-    [SerializeField] private float _stopDistanceFromPlayer;
     [SerializeField] private float _rayCastDitsnce;
+    [SerializeField] private float fireRate;
+    [SerializeField] private float canFire;
     [SerializeField] private int randomTarget;
     float xCurrentPostion;
     //------------------------------------
     [SerializeField] Transform[] target;
     [SerializeField] Transform rightRayCastOrgin;
     [SerializeField] Transform leftRayCastOrgin;
-    [SerializeField] Transform snowFlakes;
+    [SerializeField] Transform fireFlakes;
+    [SerializeField] Transform gun;  // point to insitate any item to hit the target (Player)
     [SerializeField] LayerMask layermask;
 
     //------------------------------------
     Rigidbody2D rb;
+    Animator anim;
     RaycastHit2D hitRight;
     RaycastHit2D hitLeft;
     //-----------------------------------
     [SerializeField] bool Patrol;
+    [SerializeField] bool attackPlayer;
+    //-----------------------------------
+   [SerializeField] GameObject attackParticle;
     void Start()
     {
+        anim = GetComponentInChildren<Animator>();
         randomTarget = Random.Range(0, target.Length);
         xCurrentPostion = transform.position.x;
         rb = GetComponent<Rigidbody2D>();
@@ -33,6 +40,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         FlipSprite();
+        AttackPlayer();
         xCurrentPostion = transform.position.x;
         CheckDistanceToPatrolPoints();
         FoundPlayer();
@@ -87,29 +95,45 @@ public class Enemy : MonoBehaviour
     {
         if(hitRight.collider)
         {
+            attackParticle.SetActive(true);
+            attackPlayer = true;
             Patrol = false;
             transform.localScale = new Vector3(-.2f, .2f, Time.deltaTime * 10);
-            AttackPlayer();
-
-
+            
 
         }
         else if(hitLeft.collider)
         {
+            attackParticle.SetActive(true);
+            attackPlayer = true;
             Patrol = false;
             transform.localScale = new Vector3(.2f, .2f, Time.deltaTime * 10);
-            AttackPlayer();
+        }
+       else if(hitLeft.collider==null||hitRight.collider==null)
+        {
+            attackPlayer = false;
+            anim.SetTrigger("Idle");
+            attackParticle.SetActive(false);
         }
     }
     
     void AttackPlayer()
     {
-        for(int i=0;i>4;i++)
+        if (attackPlayer)
         {
-            Instantiate(snowFlakes, transform.position, Quaternion.identity);
-            i++;
-            Debug.Log(i);
-           
+            anim.SetTrigger("attack");
+
         }
+        // delay the rate of instaited items  of enemy weapon to attack Player
+        if (attackPlayer&&Time.time> canFire)
+        {
+            fireRate = Random.Range(.5f, 1.5f);
+            canFire = Time.time + fireRate;
+            Instantiate(fireFlakes, gun.transform.position, Quaternion.identity);
+        }
+       
+      
     }
+
+    
 }
