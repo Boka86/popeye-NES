@@ -761,7 +761,7 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &457851913
@@ -8004,7 +8004,7 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &985654787
@@ -9394,7 +9394,7 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1528513252
@@ -11220,14 +11220,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Girl
       objectReference: {fileID: 0}
-    - target: {fileID: 9178090179370904482, guid: 063faa1b98ce6a14a96a8f2d07ed254a, type: 3}
-      propertyPath: WayPoints
-      value: 
-      objectReference: {fileID: 67658096}
-    - target: {fileID: 9178090179370904482, guid: 063faa1b98ce6a14a96a8f2d07ed254a, type: 3}
-      propertyPath: WaypointsFree
-      value: 
-      objectReference: {fileID: 67658096}
     - target: {fileID: 9178090179370904483, guid: 063faa1b98ce6a14a96a8f2d07ed254a, type: 3}
       propertyPath: Waypoints
       value: 
