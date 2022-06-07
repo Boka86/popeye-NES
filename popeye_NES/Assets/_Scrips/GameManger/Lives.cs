@@ -11,6 +11,7 @@ public class Lives : MonoBehaviour
     [SerializeField] private Image heartImage;
     [SerializeField] private Sprite[] liveSprite;
     [SerializeField] private Sprite[] heartsCollected;
+    [SerializeField] private TextMeshProUGUI WinLevelText;
     
     
     void Start()
@@ -55,6 +56,7 @@ public class Lives : MonoBehaviour
                 break;
             case 1:
                 heartImage.sprite = heartsCollected[1];
+              
                 break;
             case 2:
                 heartImage.sprite = heartsCollected[2];
@@ -100,6 +102,9 @@ public class Lives : MonoBehaviour
                 break;
             case 16:
                 heartImage.sprite = heartsCollected[16];
+                WinLevelText.gameObject.SetActive(true);
+
+
                 break;
             default:
                 break;

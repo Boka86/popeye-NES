@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,10 +30,16 @@ public class Player : MonoBehaviour
     //-----------------------
     AudioSource source;
     [SerializeField] AudioClip hitEffect;
-    
+    //----------------------
+    GameObject[] enemyGO;
+   
+
+
     void Start()
     {
-       
+
+        enemyGO= GameObject.FindGameObjectsWithTag("Enemy");
+        
         lives = GameObject.Find("Canvas").GetComponent<Lives>();
         source = GetComponent<AudioSource>();
         
@@ -57,7 +64,7 @@ public class Player : MonoBehaviour
             JumpingDetect();
             Dead();
         }
-       
+        QuitGame();
     }
 
     private void FixedUpdate()
@@ -149,6 +156,11 @@ public class Player : MonoBehaviour
         heartCount++;
 
         lives.UpdateHeartCollected(heartCount);
+        if(heartCount>=16)
+        {
+            Debug.Log(" Level Done ");
+            StartCoroutine(NextLevel());
+        }
     }
 
     void Dead()
@@ -159,7 +171,7 @@ public class Player : MonoBehaviour
             rb.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             liveCount = 0;
             anim.SetBool("IsDead", true);
-            StartCoroutine(LoadLevel());
+            StartCoroutine(RestartLevel());
         }
     }
 
@@ -172,7 +184,7 @@ public class Player : MonoBehaviour
         gameOver = true;
         anim.SetBool("IsDead", true);
         rb.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        StartCoroutine(LoadLevel());
+        StartCoroutine(RestartLevel());
         if (gameOver==false)
         {
             MovmentVariable();
@@ -183,10 +195,29 @@ public class Player : MonoBehaviour
         
     }
 
-    public IEnumerator LoadLevel()
+    public IEnumerator RestartLevel()
     {
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene(0);
     }
+    public IEnumerator NextLevel()
+    {
+        foreach (GameObject enemyGO in enemyGO)
+        {
+            Destroy(enemyGO);
 
+        }
+         yield return new WaitForSeconds(4f);
+         SceneManager.LoadScene(0);
+
+    }
+
+    void QuitGame()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+   
 }
